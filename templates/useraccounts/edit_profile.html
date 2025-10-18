@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Profile - Emerald Secrets{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <!-- Profile Sidebar -->
+            <div class="profile-card">
+                <div class="text-center mb-4">
+                    <img src="{{ form.instance.profile_image.url }}" alt="Profile Picture" 
+                         class="profile-avatar mb-3" id="profile-preview">
+                    <h4 class="mb-1">{{ user.get_full_name|default:user.username }}</h4>
+                    <p class="text-muted mb-0">{{ user.email }}</p>
+                </div>
+                
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user me-2"></i>Profile Overview
+                    </a>
+                    <a href="{% url 'edit_profile' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-edit me-2"></i>Edit Profile
+                    </a>
+                    <a href="{% url 'order_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shopping-bag me-2"></i>My Orders
+                    </a>
+                    <a href="{% url 'address_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-map-marker-alt me-2"></i>Addresses
+                    </a>
+                    <a href="{% url 'change_password' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-key me-2"></i>Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <!-- Edit Profile Form -->
+            <div class="profile-card">
+                <h4 class="mb-4">Edit Profile</h4>
+                
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Personal Information -->
+                    <div class="mb-4">
+                        <h5 class="text-pink mb-3">Personal Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.first_name|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.last_name|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.email|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.phone|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.date_of_birth|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.profile_image.id_for_label }}" class="form-label">Profile Picture</label>
+                                    {{ form.profile_image }}
+                                    <div class="form-text">Upload a profile picture (max 5MB)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address Information -->
+                    <div class="mb-4">
+                        <h5 class="text-pink mb-3">Address Information</h5>
+                        <div class="row">
+                            <div class="col-12">
+                                {{ form.address_line1|as_crispy_field }}
+                            </div>
+                            <div class="col-12">
+                                {{ form.address_line2|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.city|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.state|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.pincode|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.country|as_crispy_field }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'profile' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-pink">
+                            <i class="fas fa-save me-2"></i>Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Profile image preview
+document.getElementById('id_profile_image').addEventListener('change', function(e) {
+    const file = e.target.files;
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('profile-preview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const email = document.getElementById('id_email').value;
+    const phone = document.getElementById('id_phone').value;
+    const pincode = document.getElementById('id_pincode').value;
+    
+    // Email validation
+    if (email && !email.includes('@')) {
+        e.preventDefault();
+        alert('Please enter a valid email address');
+        return;
+    }
+    
+    // Pincode validation
+    if (pincode && (pincode.length !== 6 || isNaN(pincode))) {
+        e.preventDefault();
+        alert('Please enter a valid 6-digit pincode');
+        return;
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Emerald Secrets - Premium Natural Beauty Products{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-content">
+                <div class="gradient-box d-inline-block px-3 py-1 rounded-pill mb-3">
+                    <small class="text-white fw-semibold">EXPLORE</small>
+                </div>
+                <h1 class="hero-title">Embrace Your Natural Beauty</h1>
+                <p class="lead mb-4">Discover premium beauty products crafted with the finest ingredients to enhance your natural beauty and elevate your skincare ritual.</p>
+                
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <a href="{% url 'shop' %}" class="btn btn-pink btn-lg">Shop Collection</a>
+                    <a href="#about" class="btn btn-outline-pink btn-lg">Learn More</a>
+                </div>
+                
+                <!-- Stats -->
+                <div class="row mt-5">
+                    <div class="col-4 text-center">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Natural Ingredients</div>
+                    </div>
+                    <div class="col-4 text-center">
+                        <div class="stat-number">10K+</div>
+                        <div class="stat-label">Happy Customers</div>
+                    </div>
+                    <div class="col-4 text-center">
+                        <div class="stat-number">Cruelty Free</div>
+                        <div class="stat-label">Never Tested on Animals</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6 text-center">
+                <div class="hero-products">
+                    <!-- Product showcase with floating elements -->
+                    <div class="position-relative">
+                        <img src="{% static 'images/Multani.jpeg' %}" alt="Beauty Products" class="img-fluid" style="max-height: 600px;">
+                        <img src="{% static 'images/Multani.jpeg' %}" alt="Beauty Products" class="img-fluid" style="max-height: 600px;">
+                        <img src="{% static 'images/Multani.jpeg' %}" alt="Beauty Products" class="img-fluid" style="max-height: 600px;">
+                        <img src="{% static 'images/Multani.jpeg' %}" alt="Beauty Products" class="img-fluid" style="max-height: 600px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="py-5">
+    <div class="container">
+        <div class="section-title">
+            <div class="gradient-box d-inline-block px-3 py-1 rounded-pill mb-3">
+                <small class="text-white fw-semibold">FEATURED COLLECTION</small>
+            </div>
+            <h2>Curated selection of our most loved products, crafted to perfection for your beauty ritual</h2>
+        </div>
+        
+        <div class="row">
+            {% for product in featured_products %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="product-card card h-100">
+                    <div class="product-image">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top">
+                        <div class="product-category">{{ product.category.name }}</div>
+                        {% if product.discount_percentage %}
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-danger">-{{ product.discount_percentage }}%</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted flex-grow-1">{{ product.description|truncatewords:15 }}</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div class="product-price">
+                                {% if product.compare_price %}
+                                    <span class="product-compare-price">₹{{ product.compare_price }}</span>
+                                {% endif %}
+                                ₹{{ product.price }}
+                            </div>
+                            <div class="btn-group">
+                                <a href="{{ product.get_absolute_url }}" class="btn btn-outline-pink btn-sm">View</a>
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'add_to_cart' product.id %}" class="btn btn-pink btn-sm">
+                                        <i class="fas fa-cart-plus"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'shop' %}" class="btn btn-outline-pink btn-lg">View All Products</a>
+        </div>
+    </div>
+</section>
+
+<!-- Collections -->
+<section class="featured-section">
+    <div class="container">
+        <div class="section-title">
+            <div class="gradient-box d-inline-block px-3 py-1 rounded-pill mb-3">
+                <small class="text-white fw-semibold">EXPLORE</small>
+            </div>
+            <h2>Our Collections</h2>
+            <p class="section-subtitle">Each collection is thoughtfully curated to address your specific beauty needs</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="collection-card" style="background: linear-gradient(135deg, #ff6b9d, #ff8fab);">
+                    <div class="text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-spa fa-3x opacity-75"></i>
+                        </div>
+                        <h4>Earth's Tone</h4>
+                        <p>Illuminate your skin with our brightening and glow-enhancing formulas</p>
+                        <a href="{% url 'shop' %}?category=treatment" class="btn btn-outline-light">Explore Collection</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="collection-card" style="background: linear-gradient(135deg, #ffb347, #ff8c42);">
+                    <div class="text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-leaf fa-3x opacity-75"></i>
+                        </div>
+                        <h4>Flora Section</h4>
+                        <p>Pure botanical ingredients for gentle, effective skincare</p>
+                        <a href="{% url 'shop' %}?category=skincare" class="btn btn-outline-light">Explore Collection</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="collection-card" style="background: linear-gradient(135deg, #a8e6cf, #7fcdcd);">
+                    <div class="text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-star fa-3x opacity-75"></i>
+                        </div>
+                        <h4>Luxury Line</h4>
+                        <p>Premium products with advanced formulations for visible results</p>
+                        <a href="{% url 'shop' %}?category=luxury" class="btn btn-outline-light">Explore Collection</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter-section" id="contact">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <div class="mb-4">
+                    <i class="fas fa-envelope fa-3x opacity-75"></i>
+                </div>
+                <h3>Join Our Beauty Community</h3>
+                <p class="mb-4">Subscribe to receive exclusive tips, early access to new products, and special offers delivered to your inbox.</p>
+                
+                <form class="newsletter-form">
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Enter your email" required>
+                        <button class="btn" type="submit">Subscribe</button>
+                    </div>
+                    <small class="text-white-50 mt-2 d-block">We respect your privacy. Unsubscribe at any time.</small>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="py-5" id="about">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4">
+                <div class="section-title text-start">
+                    <h2>About Emerald Secrets</h2>
+                    <p class="lead">We believe in the power of natural ingredients to enhance your beauty and boost your confidence.</p>
+                </div>
+                
+                <p>Emerald Secrets was founded with a simple mission: to create premium beauty products using the finest natural ingredients. From our signature Rose Water to premium Multani Mitti and aromatic Sandalwood products, each item in our collection is crafted with care and attention to detail.</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="gradient-box p-2 rounded-circle me-3">
+                                <i class="fas fa-leaf text-white"></i>
+                            </div>
+                            <div>
+                                <h6>100% Natural</h6>
+                                <small class="text-muted">Pure botanical ingredients</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="gradient-box p-2 rounded-circle me-3">
+                                <i class="fas fa-heart text-white"></i>
+                            </div>
+                            <div>
+                                <h6>Cruelty Free</h6>
+                                <small class="text-muted">Never tested on animals</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <img src="{% static 'images/about-1.jpg' %}" alt="Natural ingredients" class="img-fluid rounded-3">
+                    </div>
+                    <div class="col-6 mb-3">
+                        <img src="{% static 'images/about-2.jpg' %}" alt="Product crafting" class="img-fluid rounded-3">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Newsletter form submission
+document.querySelector('.newsletter-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = this.querySelector('input[type="email"]').value;
+    // Add newsletter subscription logic here
+    alert('Thank you for subscribing to Emerald Secrets newsletter!');
+    this.reset();
+});
+
+// Smooth scrolling for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Add fade-in animation on scroll
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in');
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.product-card, .collection-card, .stat-item').forEach(el => {
+    observer.observe(el);
+});
+</script>
+{% endblock %}

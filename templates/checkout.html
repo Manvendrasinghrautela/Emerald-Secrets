@@ -1,0 +1,359 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Checkout - Emerald Secrets{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="fas fa-credit-card me-2 text-pink"></i>Checkout</h2>
+        </div>
+    </div>
+
+    <!-- Checkout Steps -->
+    <div class="checkout-steps mb-5">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="step active">
+                    <div class="step-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h6>Shipping</h6>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h6>Payment</h6>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h6>Confirmation</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Shipping Information -->
+                <div class="checkout-section">
+                    <h4 class="section-title">Shipping Information</h4>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.name|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.email|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.phone|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            <!-- Empty space for alignment -->
+                        </div>
+                        <div class="col-12">
+                            {{ form.address|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.city|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.state|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.pincode|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="checkout-section">
+                    <h4 class="section-title">Payment Method</h4>
+                    
+                    <div class="payment-options">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="payment_method" 
+                                   id="payment_cod" value="cod" checked>
+                            <label class="form-check-label d-flex align-items-center" for="payment_cod">
+                                <div class="me-3">
+                                    <i class="fas fa-money-bill-wave fa-2x text-success"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Cash on Delivery</h6>
+                                    <small class="text-muted">Pay when your order is delivered</small>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="payment_method" 
+                                   id="payment_online" value="online">
+                            <label class="form-check-label d-flex align-items-center" for="payment_online">
+                                <div class="me-3">
+                                    <i class="fas fa-credit-card fa-2x text-primary"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Online Payment</h6>
+                                    <small class="text-muted">Credit/Debit Card, UPI, Net Banking</small>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="payment_method" 
+                                   id="payment_upi" value="upi">
+                            <label class="form-check-label d-flex align-items-center" for="payment_upi">
+                                <div class="me-3">
+                                    <i class="fas fa-mobile-alt fa-2x text-warning"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">UPI Payment</h6>
+                                    <small class="text-muted">GooglePay, PhonePe, Paytm, BHIM</small>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Notes -->
+                <div class="checkout-section">
+                    <h4 class="section-title">Additional Information</h4>
+                    <div class="mb-3">
+                        <label for="order_notes" class="form-label">Order Notes (Optional)</label>
+                        <textarea class="form-control" id="order_notes" name="order_notes" rows="3" 
+                                  placeholder="Any special instructions for delivery..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h4 class="section-title">Order Summary</h4>
+                    
+                    <!-- Order Items -->
+                    <div class="order-items mb-4">
+                        {% for item in cart.items.all %}
+                        <div class="item-row">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" 
+                                     class="item-image me-3">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ item.product.name }}</h6>
+                                    <small class="text-muted">Qty: {{ item.quantity }}</small>
+                                </div>
+                                <div class="text-end">
+                                    <strong>₹{{ item.total_price }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Order Totals -->
+                    <div class="order-totals">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal ({{ cart.total_items }} items):</span>
+                            <span>₹{{ cart.total_price }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping:</span>
+                            <span class="text-success">Free</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tax:</span>
+                            <span>₹0</span>
+                        </div>
+                        <hr>
+                        <div class="total-row">
+                            <div class="d-flex justify-content-between">
+                                <strong>Total:</strong>
+                                <strong class="text-pink fs-4">₹{{ cart.total_price }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Place Order Button -->
+                    <button type="submit" class="btn btn-pink w-100 btn-lg mt-4">
+                        <i class="fas fa-lock me-2"></i>Place Order
+                    </button>
+
+                    <!-- Security Info -->
+                    <div class="text-center mt-3">
+                        <small class="text-muted d-block mb-2">
+                            <i class="fas fa-shield-alt text-success me-1"></i>
+                            Your order is secured with SSL encryption
+                        </small>
+                        <div class="security-badges">
+                            <i class="fab fa-cc-visa text-info me-2" title="Visa"></i>
+                            <i class="fab fa-cc-mastercard text-warning me-2" title="Mastercard"></i>
+                            <i class="fab fa-cc-paypal text-primary me-2" title="PayPal"></i>
+                            <i class="fas fa-university text-success" title="Net Banking"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.checkout-steps .step {
+    position: relative;
+}
+
+.checkout-steps .step.active .step-icon {
+    background: var(--pink-gradient);
+    color: white;
+}
+
+.checkout-steps .step-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    transition: all 0.3s ease;
+    font-size: 1.5rem;
+}
+
+.checkout-section {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.section-title {
+    color: var(--text-dark);
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--pink-light);
+}
+
+.order-summary {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 100px;
+}
+
+.item-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.item-row {
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.item-row:last-child {
+    border-bottom: none;
+}
+
+.payment-options .form-check {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.payment-options .form-check:hover {
+    border-color: var(--pink-light);
+}
+
+.payment-options .form-check-input:checked + .form-check-label {
+    color: var(--pink-medium);
+}
+
+.payment-options .form-check-input:checked {
+    background-color: var(--pink-medium);
+    border-color: var(--pink-medium);
+}
+
+.total-row {
+    background: var(--pink-light);
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.security-badges i {
+    font-size: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .checkout-section,
+    .order-summary {
+        padding: 20px;
+    }
+    
+    .checkout-steps .step-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const requiredFields = ['name', 'email', 'phone', 'address', 'city', 'state', 'pincode'];
+    let isValid = true;
+    
+    requiredFields.forEach(field => {
+        const input = document.querySelector(`[name="${field}"]`);
+        if (!input.value.trim()) {
+            isValid = false;
+            input.classList.add('is-invalid');
+        } else {
+            input.classList.remove('is-invalid');
+        }
+    });
+    
+    if (!isValid) {
+        e.preventDefault();
+        alert('Please fill in all required fields');
+        return false;
+    }
+    
+    // Show loading state
+    const submitBtn = document.querySelector('button[type="submit"]');
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+    submitBtn.disabled = true;
+});
+
+// Payment method selection
+document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        console.log('Selected payment method:', this.value);
+    });
+});
+</script>
+{% endblock %}

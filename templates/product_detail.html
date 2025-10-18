@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Emerald Secrets{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="product-gallery">
+                <div class="main-image mb-3">
+                    <img id="mainProductImage" src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded shadow">
+                </div>
+                <div class="thumbnail-images">
+                    <div class="row g-2">
+                        <div class="col-3"><img src="{{ product.image.url }}" class="img-fluid rounded thumbnail-img active" onclick="changeMainImage('{{ product.image.url }}')"></div>
+                        {% if product.image2 %}<div class="col-3"><img src="{{ product.image2.url }}" class="img-fluid rounded thumbnail-img" onclick="changeMainImage('{{ product.image2.url }}')"></div>{% endif %}
+                        {% if product.image3 %}<div class="col-3"><img src="{{ product.image3.url }}" class="img-fluid rounded thumbnail-img" onclick="changeMainImage('{{ product.image3.url }}')"></div>{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <h1>{{ product.name }}</h1>
+            <div class="product-pricing mb-3">
+                <span class="fs-3 fw-bold text-pink me-3">₹{{ product.price }}</span>
+                {% if product.compare_price %}<span class="text-muted text-decoration-line-through">₹{{ product.compare_price }}</span>{% endif %}
+            </div>
+            <p>{{ product.description }}</p>
+            <form method="post" action="{% url 'add_to_cart' product.id %}">
+                {% csrf_token %}
+                <div class="d-flex mb-4">
+                    <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control w-25 me-3">
+                    <button type="submit" class="btn btn-pink">Add to Cart</button>
+                </div>
+            </form>
+            <h5>Reviews</h5>
+            {% for review in reviews %}<div class="mb-2"><strong>{{ review.user.username }}</strong>: {{ review.comment }}</div>{% empty %}<p>No reviews yet.</p>{% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function changeMainImage(src) { document.getElementById('mainProductImage').src = src; }
+</script>
+{% endblock %}
