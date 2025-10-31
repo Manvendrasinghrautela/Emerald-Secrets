@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Request Withdrawal - Emerald Secrets{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <div class="gradient-box d-inline-block p-3 rounded-circle mb-3">
+                            <i class="fas fa-wallet fa-2x text-white"></i>
+                        </div>
+                        <h2>Request Withdrawal</h2>
+                        <p class="text-muted">Withdraw your earned commissions</p>
+                    </div>
+
+                    <!-- Balance Info -->
+                    <div class="alert alert-info mb-4">
+                        <p class="mb-1"><strong>Available Balance:</strong></p>
+                        <h4 class="text-pink mb-0">₹{{ affiliate.pending_earnings }}</h4>
+                    </div>
+
+                    {% if affiliate.pending_earnings < 500 %}
+                    <div class="alert alert-warning mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Minimum withdrawal amount is ₹500. You need ₹{{ 500|add:affiliate.pending_earnings|stringformat:"0d" }} more to request a withdrawal.
+                    </div>
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Withdrawal Amount</label>
+                            {{ form.amount }}
+                            {% if form.amount.errors %}
+                                <div class="text-danger small">{{ form.amount.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Payment Method</label>
+                            {{ form.payment_method }}
+                            {% if form.payment_method.errors %}
+                                <div class="text-danger small">{{ form.payment_method.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Bank Details Section -->
+                        <div id="bankDetails" class="mb-4">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="mb-3">Bank Account Details</h6>
+                                    <p class="small mb-2"><strong>{{ affiliate.bank_account_name }}</strong></p>
+                                    <p class="small mb-2">{{ affiliate.bank_account_number }}</p>
+                                    <p class="small mb-0">{{ affiliate.bank_ifsc_code }}</p>
+                                </div>
+                            </div>
+                            <small class="text-muted d-block mt-2">
+                                <a href="{% url 'affiliate_profile_edit' %}">Update bank details</a>
+                            </small>
+                        </div>
+
+                        <!-- UPI Details Section -->
+                        <div id="upiDetails" class="mb-4" style="display: none;">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="mb-2">UPI ID</h6>
+                                    <p class="small mb-0">{{ affiliate.upi_id }}</p>
+                                </div>
+                            </div>
+                            <small class="text-muted d-block mt-2">
+                                <a href="{% url 'affiliate_profile_edit' %}">Update UPI details</a>
+                            </small>
+                        </div>
+
+                        <button type="submit" class="btn btn-pink w-100 btn-lg" 
+                                {% if affiliate.pending_earnings < 500 %}disabled{% endif %}>
+                            <i class="fas fa-check me-2"></i>Request Withdrawal
+                        </button>
+                    </form>
+
+                    <div class="alert alert-info mt-4">
+                        <small>
+                            <strong>Processing Time:</strong> Withdrawals are typically processed within 7-10 business days.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('id_payment_method').addEventListener('change', function() {
+    const bankDetails = document.getElementById('bankDetails');
+    const upiDetails = document.getElementById('upiDetails');
+    
+    if (this.value === 'bank') {
+        bankDetails.style.display = 'block';
+        upiDetails.style.display = 'none';
+    } else {
+        bankDetails.style.display = 'none';
+        upiDetails.style.display = 'block';
+    }
+});
+
+// Trigger on page load
+document.getElementById('id_payment_method').dispatchEvent(new Event('change'));
+</script>
+{% endblock %}

@@ -128,7 +128,7 @@
                         </div>
                         <h4>Earth's Tone</h4>
                         <p>Illuminate your skin with our brightening and glow-enhancing formulas</p>
-                        <a href="{% url 'shop' %}?category=treatment" class="btn btn-outline-light">Explore Collection</a>
+                        <a href="{% url 'category_products' slug='earths-tone' %}" class="btn btn-outline-light">Explore Collection</a>
                     </div>
                 </div>
             </div>
@@ -141,20 +141,7 @@
                         </div>
                         <h4>Flora Section</h4>
                         <p>Pure botanical ingredients for gentle, effective skincare</p>
-                        <a href="{% url 'shop' %}?category=skincare" class="btn btn-outline-light">Explore Collection</a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="collection-card" style="background: linear-gradient(135deg, #a8e6cf, #7fcdcd);">
-                    <div class="text-center">
-                        <div class="mb-3">
-                            <i class="fas fa-star fa-3x opacity-75"></i>
-                        </div>
-                        <h4>Luxury Line</h4>
-                        <p>Premium products with advanced formulations for visible results</p>
-                        <a href="{% url 'shop' %}?category=luxury" class="btn btn-outline-light">Explore Collection</a>
+                        <a href="{% url 'category_products' slug='flora-section' %}" class="btn btn-outline-light">Explore Collection</a>
                     </div>
                 </div>
             </div>

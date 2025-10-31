@@ -1,5 +1,5 @@
 from django import forms
-from .models import Review
+from .models import Review, AffiliateProfile, AffiliateWithdrawal
 
 class ReviewForm(forms.ModelForm):
     class Meta:
@@ -97,3 +97,24 @@ class ContactForm(forms.Form):
             'placeholder': 'Your Message'
         })
     )
+
+class AffiliateProfileForm(forms.ModelForm):
+    class Meta:
+        model = AffiliateProfile
+        fields = ['bank_account_name', 'bank_account_number', 'bank_ifsc_code', 'upi_id']
+        widgets = {
+            'bank_account_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Account Holder Name'}),
+            'bank_account_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Account Number'}),
+            'bank_ifsc_code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'IFSC Code'}),
+            'upi_id': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'yourname@upi'}),
+        }
+
+
+class AffiliateWithdrawalForm(forms.ModelForm):
+    class Meta:
+        model = AffiliateWithdrawal
+        fields = ['amount', 'payment_method']
+        widgets = {
+            'amount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter amount', 'min': '500'}),
+            'payment_method': forms.Select(attrs={'class': 'form-control'}),
+        }

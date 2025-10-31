@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Category, Product, Cart, CartItem, Order, OrderItem, Review
+from .models import Category, Product, Cart, CartItem, Order, OrderItem, Review, AffiliateProfile, AffiliateClick, AffiliateReferral, AffiliateWithdrawal
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -89,3 +89,39 @@ class ReviewAdmin(admin.ModelAdmin):
 admin.site.site_header = "Emerald Secrets Admin"
 admin.site.site_title = "Emerald Secrets Admin Portal"
 admin.site.index_title = "Welcome to Emerald Secrets Administration"
+
+@admin.register(AffiliateProfile)
+class AffiliateProfileAdmin(admin.ModelAdmin):
+    list_display = ['affiliate_code', 'user', 'is_approved', 'is_active', 'total_earnings', 'created_at']
+    list_filter = ['is_approved', 'is_active', 'created_at']
+    search_fields = ['user__username', 'affiliate_code']
+    readonly_fields = ['affiliate_code', 'created_at', 'updated_at']
+
+@admin.register(AffiliateClick)
+class AffiliateClickAdmin(admin.ModelAdmin):
+    list_display = ['affiliate', 'product', 'clicked_at']
+    list_filter = ['clicked_at', 'affiliate']
+    readonly_fields = ['clicked_at']
+
+@admin.register(AffiliateReferral)
+class AffiliateReferralAdmin(admin.ModelAdmin):
+    list_display = ['affiliate', 'order', 'commission_amount', 'status', 'created_at']
+    list_filter = ['status', 'created_at']
+    actions = ['approve_referrals', 'mark_as_paid']
+    readonly_fields = ['created_at']
+    
+    def approve_referrals(self, request, queryset):
+        for referral in queryset:
+            referral.approve()
+    approve_referrals.short_description = "Approve selected referrals"
+    
+    def mark_as_paid(self, request, queryset):
+        for referral in queryset.filter(status='approved'):
+            referral.mark_as_paid()
+    mark_as_paid.short_description = "Mark as paid"
+
+@admin.register(AffiliateWithdrawal)
+class AffiliateWithdrawalAdmin(admin.ModelAdmin):
+    list_display = ['affiliate', 'amount', 'status', 'requested_at']
+    list_filter = ['status', 'requested_at']
+    readonly_fields = ['requested_at']

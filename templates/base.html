@@ -41,9 +41,9 @@
                         <a class="nav-link dropdown-toggle" href="#" id="collectionsDropdown" role="button" data-bs-toggle="dropdown">
                             Collections
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'shop' %}?category=skincare">Earth's Tone</a></li>
-                            <li><a class="dropdown-item" href="{% url 'shop' %}?category=treatment">Flora Section</a></li>
+                        <ul class="dropdown-menu" aria-labelledby="collectionsDropdown">
+                            <li><a class="dropdown-item" href="{% url 'category_products' slug='earths-tone' %}">Earth’s Tone</a></li>
+                            <li><a class="dropdown-item" href="{% url 'category_products' slug='flora-section' %}">Flora Section</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -51,6 +51,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'affiliate_info' %}">Affiliate Program</a>
                     </li>
                 </ul>
                 
@@ -82,7 +85,7 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-user fa-lg"></i>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
@@ -135,9 +138,8 @@
                     <h6 class="fw-bold">Shop</h6>
                     <ul class="list-unstyled">
                         <li><a href="{% url 'shop' %}" class="text-muted text-decoration-none">All Products</a></li>
-                        <li><a href="{% url 'shop' %}?category=skincare" class="text-muted text-decoration-none">Skincare</a></li>
-                        <li><a href="{% url 'shop' %}?category=makeup" class="text-muted text-decoration-none">Makeup</a></li>
-                        <li><a href="{% url 'shop' %}?category=fragrance" class="text-muted text-decoration-none">Fragrance</a></li>
+                        <li><a href="{% url 'category_products' slug='earths-tone' %}" class="text-muted text-decoration-none">Earth's Tone</a></li>
+                        <li><a href="{% url 'category_products' slug='flora-section' %}" class="text-muted text-decoration-none">Flora</a></li>
                     </ul>
                 </div>
                 
@@ -164,11 +166,10 @@
                 <div class="col-lg-2 col-md-6 mb-4">
                     <h6 class="fw-bold">Newsletter</h6>
                     <p class="small text-muted">Subscribe to receive exclusive tips, early access to new products, and special offers.</p>
-                    <form class="newsletter-form">
-                        <div class="input-group">
-                            <input type="email" class="form-control form-control-sm" placeholder="Your email">
-                            <button class="btn btn-pink btn-sm" type="submit">Subscribe</button>
-                        </div>
+                    <form class="newsletter-form d-flex">
+                        {% csrf_token %}
+                        <input type="email" class="form-control form-control-sm me-2" placeholder="Your email" required>
+                        <button class="btn btn-pink btn-sm" type="submit">Subscribe</button>
                     </form>
                 </div>
             </div>

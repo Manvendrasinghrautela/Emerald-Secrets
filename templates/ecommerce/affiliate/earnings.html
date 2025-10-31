@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Earnings & Referrals - Emerald Secrets{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="fas fa-chart-line me-2 text-pink"></i>Earnings & Referrals</h2>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="text-muted mb-2">Total Earnings</h5>
+                    <h3 class="text-pink mb-0">₹{{ affiliate.total_earnings }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="text-muted mb-2">Pending</h5>
+                    <h3 class="text-warning mb-0">₹{{ affiliate.pending_earnings }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="text-muted mb-2">Withdrawn</h5>
+                    <h3 class="text-success mb-0">₹{{ affiliate.withdrawn_earnings }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <a href="{% url 'affiliate_withdraw' %}" class="btn btn-pink btn-sm w-100">
+                        <i class="fas fa-wallet me-1"></i>Withdraw
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="row">
+        <div class="col-12">
+            <ul class="nav nav-tabs mb-4" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="referrals-tab" data-bs-toggle="tab" data-bs-target="#referrals" type="button" role="tab">
+                        Referrals
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="withdrawals-tab" data-bs-toggle="tab" data-bs-target="#withdrawals" type="button" role="tab">
+                        Withdrawal History
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Referrals Tab -->
+                <div class="tab-pane fade show active" id="referrals" role="tabpanel">
+                    {% if referrals %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Commission</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for referral in referrals %}
+                                <tr>
+                                    <td>#{{ referral.order.order_number }}</td>
+                                    <td>{{ referral.order.user.get_full_name|default:referral.order.user.username }}</td>
+                                    <td>₹{{ referral.order.total_amount }}</td>
+                                    <td class="fw-bold text-pink">₹{{ referral.commission_amount }}</td>
+                                    <td>
+                                        {% if referral.status == 'pending' %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% elif referral.status == 'approved' %}
+                                            <span class="badge bg-info">Approved</span>
+                                        {% elif referral.status == 'paid' %}
+                                            <span class="badge bg-success">Paid</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Rejected</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ referral.created_at|date:"M d, Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No referrals yet. Start sharing your affiliate links!</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Withdrawals Tab -->
+                <div class="tab-pane fade" id="withdrawals" role="tabpanel">
+                    {% if withdrawals %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Amount</th>
+                                    <th>Method</th>
+                                    <th>Status</th>
+                                    <th>Requested</th>
+                                    <th>Processed</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for withdrawal in withdrawals %}
+                                <tr>
+                                    <td class="fw-bold">₹{{ withdrawal.amount }}</td>
+                                    <td>
+                                        {% if withdrawal.payment_method == 'bank' %}
+                                            <i class="fas fa-bank me-1"></i>Bank Transfer
+                                        {% else %}
+                                            <i class="fas fa-mobile-alt me-1"></i>UPI
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if withdrawal.status == 'pending' %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% elif withdrawal.status == 'processing' %}
+                                            <span class="badge bg-info">Processing</span>
+                                        {% elif withdrawal.status == 'completed' %}
+                                            <span class="badge bg-success">Completed</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Rejected</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ withdrawal.requested_at|date:"M d, Y H:i" }}</td>
+                                    <td>{{ withdrawal.processed_at|date:"M d, Y H:i"|default:"--" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No withdrawal requests yet</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Collections - Emerald Secrets{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-md-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 mb-3">Our Collections</h1>
+        <p class="lead text-muted">Explore our curated collections of natural beauty products</p>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for category in categories %}
+            <div class="col">
+                <div class="card collection-card h-100 shadow-sm overflow-hidden">
+                    <a href="{% url 'category_products' category.slug %}" class="text-decoration-none">
+                        {% if category.image %}
+                            <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}" style="height: 300px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-gradient-pink" style="height: 300px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-spa fa-5x text-white"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="card-body">
+                            <h3 class="card-title text-dark">{{ category.name }}</h3>
+                            <p class="card-text text-muted">{{ category.description|truncatewords:20 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-pink fw-bold">{{ category.product_count }} Product{{ category.product_count|pluralize }}</span>
+                                <span class="btn btn-sm btn-outline-pink">
+                                    View Collection <i class="fas fa-arrow-right ms-1"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                <h3>No Collections Available</h3>
+                <p class="text-muted">Check back soon for our curated collections!</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

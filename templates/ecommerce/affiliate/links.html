@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Affiliate Links - Emerald Secrets{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="fas fa-link me-2 text-pink"></i>Generate Affiliate Links</h2>
+            <p class="text-muted">Share these links with your audience and earn 5% commission on every purchase</p>
+        </div>
+    </div>
+
+    <!-- Shop Link -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="mb-3">Shop Link</h5>
+                    <p class="text-muted small mb-3">Direct people to your affiliate shop page</p>
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="{{ affiliate.get_affiliate_link }}" id="shopLink" readonly>
+                        <button class="btn btn-pink" onclick="copyLink('shopLink')">
+                            <i class="fas fa-copy me-1"></i>Copy Link
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Links -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4>Product Links</h4>
+            <p class="text-muted small">Copy individual product affiliate links</p>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for product in products %}
+        <div class="col-lg-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+                            {% else %}
+                                <div class="bg-light p-3 rounded text-center">
+                                    <i class="fas fa-image text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-9">
+                            <h6 class="mb-2">{{ product.name }}</h6>
+                            <small class="text-muted d-block mb-2">₹{{ product.price }}</small>
+                            <div class="input-group input-group-sm">
+                                <input type="text" class="form-control" value="{{ affiliate.get_affiliate_link|add:product.id }}" 
+                                       id="productLink{{ product.id }}" readonly>
+                                <button class="btn btn-outline-pink btn-sm" onclick="copyLink('productLink{{ product.id }}')">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">No products available at this moment</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Social Sharing -->
+    <div class="row mt-5">
+        <div class="col-lg-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="mb-3">Share on Social Media</h5>
+                    <p class="text-muted small mb-3">Promote your affiliate link on social platforms</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ affiliate.get_affiliate_link|urlencode }}" 
+                           target="_blank" class="btn btn-facebook">
+                            <i class="fab fa-facebook me-1"></i>Facebook
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url={{ affiliate.get_affiliate_link|urlencode }}&text=Check%20out%20Emerald%20Secrets" 
+                           target="_blank" class="btn btn-info">
+                            <i class="fab fa-twitter me-1"></i>Twitter
+                        </a>
+                        <a href="https://wa.me/?text={{ affiliate.get_affiliate_link|urlencode }}" 
+                           target="_blank" class="btn btn-success">
+                            <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ affiliate.get_affiliate_link|urlencode }}" 
+                           target="_blank" class="btn btn-primary">
+                            <i class="fab fa-linkedin me-1"></i>LinkedIn
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pro Tips -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <div class="card border-pink">
+                <div class="card-body">
+                    <h5 class="text-pink mb-3"><i class="fas fa-lightbulb me-2"></i>Pro Tips for Higher Conversions</h5>
+                    <ul class="mb-0">
+                        <li>Share authentic reviews of products you love</li>
+                        <li>Post during peak hours when your audience is most active</li>
+                        <li>Use eye-catching product images and descriptions</li>
+                        <li>Highlight benefits and unique features</li>
+                        <li>Engage with your audience and answer questions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyLink(elementId) {
+    const element = document.getElementById(elementId);
+    element.select();
+    document.execCommand('copy');
+    alert('Link copied to clipboard!');
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.btn-facebook {
+    background-color: #3b5998;
+    color: white;
+}
+.btn-facebook:hover {
+    background-color: #2d4373;
+    color: white;
+}
+.border-pink {
+    border-left: 4px solid #d63384 !important;
+}
+</style>
+{% endblock %}

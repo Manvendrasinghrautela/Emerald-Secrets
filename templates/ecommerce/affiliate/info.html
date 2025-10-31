@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Affiliate Program - Emerald Secrets{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-4 mb-3">Join Our Affiliate Program</h1>
+            <p class="lead text-muted mb-4">
+                Earn 5% commission on every sale you refer. Share products you love and get rewarded!
+            </p>
+            {% if user.is_authenticated %}
+                {% if user.affiliate_profile %}
+                    <a href="{% url 'affiliate_dashboard' %}" class="btn btn-pink btn-lg">
+                        <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                    </a>
+                {% else %}
+                    <a href="{% url 'affiliate_signup' %}" class="btn btn-pink btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Become an Affiliate
+                    </a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'signup' %}?next={% url 'affiliate_signup' %}" class="btn btn-pink btn-lg">
+                    <i class="fas fa-user-plus me-2"></i>Sign Up to Join
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Benefits -->
+    <div class="row mb-5">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center shadow-sm">
+                <div class="card-body">
+                    <div class="gradient-box d-inline-block p-3 rounded-circle mb-3">
+                        <i class="fas fa-percent fa-2x text-white"></i>
+                    </div>
+                    <h4>5% Commission</h4>
+                    <p class="text-muted">Earn 5% on every sale made through your affiliate link</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center shadow-sm">
+                <div class="card-body">
+                    <div class="gradient-box d-inline-block p-3 rounded-circle mb-3">
+                        <i class="fas fa-link fa-2x text-white"></i>
+                    </div>
+                    <h4>Unique Links</h4>
+                    <p class="text-muted">Get custom affiliate links for all our products</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center shadow-sm">
+                <div class="card-body">
+                    <div class="gradient-box d-inline-block p-3 rounded-circle mb-3">
+                        <i class="fas fa-chart-line fa-2x text-white"></i>
+                    </div>
+                    <h4>Real-time Tracking</h4>
+                    <p class="text-muted">Track clicks, conversions, and earnings in real-time</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="row mb-5">
+        <div class="col-lg-10 mx-auto">
+            <h2 class="text-center mb-4">How It Works</h2>
+            <div class="row">
+                <div class="col-md-3 text-center mb-4">
+                    <div class="step-number mb-3">1</div>
+                    <h5>Sign Up</h5>
+                    <p class="text-muted small">Create your affiliate account</p>
+                </div>
+                <div class="col-md-3 text-center mb-4">
+                    <div class="step-number mb-3">2</div>
+                    <h5>Get Links</h5>
+                    <p class="text-muted small">Generate unique affiliate links</p>
+                </div>
+                <div class="col-md-3 text-center mb-4">
+                    <div class="step-number mb-3">3</div>
+                    <h5>Share</h5>
+                    <p class="text-muted small">Promote products on social media</p>
+                </div>
+                <div class="col-md-3 text-center mb-4">
+                    <div class="step-number mb-3">4</div>
+                    <h5>Earn</h5>
+                    <p class="text-muted small">Get 5% commission on sales</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h2 class="text-center mb-4">Frequently Asked Questions</h2>
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            How much commission do I earn?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            You earn 5% commission on every sale made through your affiliate link when the payment is confirmed.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            When do I get paid?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            You can request a withdrawal once your earnings reach ₹500. Payments are processed within 7-10 business days.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            How do I track my referrals?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Your affiliate dashboard provides real-time tracking of clicks, conversions, and earnings.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="row mt-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <div class="gradient-box p-5 rounded">
+                <h3 class="text-white mb-3">Ready to Start Earning?</h3>
+                <p class="text-white-50 mb-4">Join hundreds of affiliates promoting Emerald Secrets products</p>
+                {% if user.is_authenticated %}
+                    {% if not user.affiliate_profile %}
+                        <a href="{% url 'affiliate_signup' %}" class="btn btn-light btn-lg">
+                            <i class="fas fa-rocket me-2"></i>Start Now
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'signup' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-rocket me-2"></i>Sign Up Free
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.step-number {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+</style>
+{% endblock %}

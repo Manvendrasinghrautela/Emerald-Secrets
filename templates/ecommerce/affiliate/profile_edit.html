@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Affiliate Profile - Emerald Secrets{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2>Edit Affiliate Profile</h2>
+                        <p class="text-muted">Update your payment details</p>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <h5 class="mb-4">Bank Account Details</h5>
+
+                        <div class="mb-3">
+                            <label class="form-label">Account Holder Name</label>
+                            {{ form.bank_account_name }}
+                            {% if form.bank_account_name.errors %}
+                                <div class="text-danger small">{{ form.bank_account_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Account Number</label>
+                            {{ form.bank_account_number }}
+                            {% if form.bank_account_number.errors %}
+                                <div class="text-danger small">{{ form.bank_account_number.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">IFSC Code</label>
+                            {{ form.bank_ifsc_code }}
+                            {% if form.bank_ifsc_code.errors %}
+                                <div class="text-danger small">{{ form.bank_ifsc_code.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <hr>
+
+                        <h5 class="mb-4">UPI Payment (Optional)</h5>
+
+                        <div class="mb-4">
+                            <label class="form-label">UPI ID</label>
+                            {{ form.upi_id }}
+                            {% if form.upi_id.errors %}
+                                <div class="text-danger small">{{ form.upi_id.errors.0 }}</div>
+                            {% endif %}
+                            <small class="text-muted d-block">Example: yourname@upi</small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-pink btn-lg">
+                                <i class="fas fa-save me-2"></i>Save Changes
+                            </button>
+                            <a href="{% url 'affiliate_dashboard' %}" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
