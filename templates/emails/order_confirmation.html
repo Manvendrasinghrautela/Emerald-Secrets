@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #d63384; color: white; padding: 20px; text-align: center; border-radius: 5px; }
+        .content { padding: 20px; background-color: #f9f9f9; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f0f0f0; }
+        .total { font-size: 18px; font-weight: bold; text-align: right; margin-top: 20px; }
+        .footer { text-align: center; padding: 10px; font-size: 12px; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Order Confirmation</h1>
+        </div>
+        <div class="content">
+            <p>Hi {{ customer_name }},</p>
+            <p>Thank you for your order! Here are your order details:</p>
+            
+            <p><strong>Order Number:</strong> {{ order.order_number }}</p>
+            <p><strong>Order Date:</strong> {{ order.created_at|date:"M d, Y" }}</p>
+            
+            <table>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+                {% for item in order.items.all %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.price }}</td>
+                    <td>₹{{ item.product.price|add:item.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            
+            <div class="total">
+                <p>Total Amount: ₹{{ order.total_amount }}</p>
+            </div>
+            
+            <p><strong>Shipping Address:</strong></p>
+            <p>{{ order.shipping_name }}<br>{{ order.shipping_address }}<br>{{ order.shipping_city }}, {{ order.shipping_state }} - {{ order.shipping_pincode }}<br>{{ order.shipping_phone }}</p>
+            
+            <p>Your order will be delivered within 5-7 business days.</p>
+            <p>If you have any questions, please contact us.</p>
+            <p>Thank you for shopping with us!</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2025 Emerald Secrets. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

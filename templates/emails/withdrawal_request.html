@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #d63384; color: white; padding: 20px; text-align: center; border-radius: 5px; }
+        .content { padding: 20px; background-color: #f9f9f9; }
+        .footer { text-align: center; padding: 10px; font-size: 12px; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Withdrawal Request Received</h1>
+        </div>
+        <div class="content">
+            <p>Hi {{ affiliate.user.first_name }},</p>
+            <p>We've received your withdrawal request. Here are the details:</p>
+            
+            <p><strong>Amount:</strong> ₹{{ withdrawal.amount }}</p>
+            <p><strong>Payment Method:</strong> {{ withdrawal.get_payment_method_display }}</p>
+            <p><strong>Status:</strong> Pending</p>
+            <p><strong>Request Date:</strong> {{ withdrawal.requested_at|date:"M d, Y H:i" }}</p>
+            
+            <p>Your withdrawal will be processed within 7-10 business days. We'll send you another email once it's complete.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2025 Emerald Secrets. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

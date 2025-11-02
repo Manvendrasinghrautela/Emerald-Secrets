@@ -5,6 +5,7 @@ from PIL import Image
 from django.utils import timezone
 import uuid
 
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
@@ -70,6 +71,28 @@ class Product(models.Model):
         return 0
 
 
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlists')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    added_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('user', 'product')
+        ordering = ['-added_at']
+
+    def __str__(self):
+        return f"{self.user.username}'s wishlist: {self.product.name}"
+
+
+class Newsletter(models.Model):
+    email = models.EmailField(unique=True)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+    unsubscribe_token = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return self.email
+
+
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -81,7 +104,7 @@ class Cart(models.Model):
     @property
     def total_price(self):
         total = 0
-        for item in self.items.all():  # adjust according to how you store cart items
+        for item in self.items.all():
             total += item.product.price * item.quantity
         return total
 
@@ -141,21 +164,22 @@ class Order(models.Model):
 
     def calculate_total(self):
         """Calculate total order amount from order items"""
-        total = sum(item.total_price for item in self.items.all())
-        return total
-    
-    @property
-    def total_amount(self):
-        """Get total order amount"""
-        if self.pk:  # Only calculate if order exists
-            return self.calculate_total()
+        if self.pk:  # Only calculate if order exists in database
+            return sum(item.total_price for item in self.items.all())
         return 0
-    
+
     def save(self, *args, **kwargs):
+        """Override save to auto-calculate total_amount"""
+        # Save first to ensure order has a primary key
         super().save(*args, **kwargs)
-        # Update total_amount field if you have one
-        if hasattr(self, 'total'):
-            self.total = self.calculate_total()
+        # Then calculate and update total_amount
+        calculated_total = self.calculate_total()
+        if self.total_amount != calculated_total:
+            self.total_amount = calculated_total
+            # Use update to avoid recursion
+            Order.objects.filter(pk=self.pk).update(total_amount=calculated_total)
+
+    
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
@@ -179,12 +203,15 @@ class OrderItem(models.Model):
             # Fallback to product price if item price is not set
             return self.product.price * self.quantity
         return 0
-    
+
     def save(self, *args, **kwargs):
         """Auto-set price from product if not provided"""
         if not self.price and self.product:
             self.price = self.product.price
         super().save(*args, **kwargs)
+        # Update order total after saving order item
+        if self.order:
+            self.order.save()
 
 
 class Review(models.Model):
@@ -201,6 +228,7 @@ class Review(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.product.name} ({self.rating} stars)"
 
+
 class Coupon(models.Model):
     code = models.CharField(max_length=50, unique=True)
     discount_type = models.CharField(max_length=20, choices=[('percentage', 'Percentage'), ('fixed', 'Fixed Amount')])
@@ -214,7 +242,8 @@ class Coupon(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.cod
+        return self.code
+
 
 class AffiliateProfile(models.Model):
     """Affiliate user profile"""
@@ -224,34 +253,34 @@ class AffiliateProfile(models.Model):
     total_earnings = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     pending_earnings = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     withdrawn_earnings = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    
+
     # Bank details for payouts
     bank_account_name = models.CharField(max_length=100, blank=True)
     bank_account_number = models.CharField(max_length=50, blank=True)
     bank_ifsc_code = models.CharField(max_length=20, blank=True)
     upi_id = models.CharField(max_length=100, blank=True)
-    
+
     is_approved = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         verbose_name = 'Affiliate Profile'
         verbose_name_plural = 'Affiliate Profiles'
-    
+
     def __str__(self):
         return f"{self.user.username} - {self.affiliate_code}"
-    
+
     def save(self, *args, **kwargs):
         if not self.affiliate_code:
             self.affiliate_code = self.generate_affiliate_code()
         super().save(*args, **kwargs)
-    
+
     def generate_affiliate_code(self):
         """Generate unique affiliate code"""
         return f"AFF{uuid.uuid4().hex[:8].upper()}"
-    
+
     def get_affiliate_link(self, product_id=None):
         """Generate affiliate link"""
         from django.conf import settings
@@ -269,11 +298,11 @@ class AffiliateClick(models.Model):
     user_agent = models.CharField(max_length=255, blank=True)
     referrer = models.URLField(blank=True)
     clicked_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         verbose_name = 'Affiliate Click'
         verbose_name_plural = 'Affiliate Clicks'
-    
+
     def __str__(self):
         return f"{self.affiliate.affiliate_code} - {self.clicked_at}"
 
@@ -286,7 +315,7 @@ class AffiliateReferral(models.Model):
         ('paid', 'Paid'),
         ('rejected', 'Rejected'),
     ]
-    
+
     affiliate = models.ForeignKey(AffiliateProfile, on_delete=models.CASCADE, related_name='referrals')
     order = models.OneToOneField('Order', on_delete=models.CASCADE, related_name='affiliate_referral')
     commission_amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -294,14 +323,14 @@ class AffiliateReferral(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     approved_at = models.DateTimeField(null=True, blank=True)
     paid_at = models.DateTimeField(null=True, blank=True)
-    
+
     class Meta:
         verbose_name = 'Affiliate Referral'
         verbose_name_plural = 'Affiliate Referrals'
-    
+
     def __str__(self):
         return f"{self.affiliate.affiliate_code} - Order #{self.order.order_number}"
-    
+
     def approve(self):
         """Approve referral and update affiliate earnings"""
         if self.status == 'pending':
@@ -311,7 +340,7 @@ class AffiliateReferral(models.Model):
             self.affiliate.total_earnings += self.commission_amount
             self.affiliate.save()
             self.save()
-    
+
     def mark_as_paid(self):
         """Mark commission as paid"""
         if self.status == 'approved':
@@ -331,7 +360,7 @@ class AffiliateWithdrawal(models.Model):
         ('completed', 'Completed'),
         ('rejected', 'Rejected'),
     ]
-    
+
     affiliate = models.ForeignKey(AffiliateProfile, on_delete=models.CASCADE, related_name='withdrawals')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_method = models.CharField(max_length=20, choices=[('bank', 'Bank Transfer'), ('upi', 'UPI')])
@@ -339,10 +368,10 @@ class AffiliateWithdrawal(models.Model):
     requested_at = models.DateTimeField(auto_now_add=True)
     processed_at = models.DateTimeField(null=True, blank=True)
     notes = models.TextField(blank=True)
-    
+
     class Meta:
         verbose_name = 'Affiliate Withdrawal'
         verbose_name_plural = 'Affiliate Withdrawals'
-    
+
     def __str__(self):
         return f"{self.affiliate.affiliate_code} - ₹{self.amount}"

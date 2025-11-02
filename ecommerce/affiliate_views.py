@@ -9,7 +9,7 @@ from .models import (
     AffiliateWithdrawal, Product
 )
 from .forms import AffiliateProfileForm, AffiliateWithdrawalForm
-
+from ecommerce.emails import send_affiliate_signup_email, send_affiliate_notification_to_admin
 
 def affiliate_info(request):
     """Affiliate program information page"""
@@ -29,6 +29,11 @@ def affiliate_signup(request):
             profile = form.save(commit=False)
             profile.user = request.user
             profile.save()
+            # Send confirmation email to affiliate
+            send_affiliate_signup_email(profile)
+            
+            # Send notification email to admin
+            send_affiliate_notification_to_admin(profile)
             messages.success(request, 'Your affiliate application has been submitted! We will review and approve it soon.')
             return redirect('affiliate_dashboard')
     else:

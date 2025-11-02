@@ -21,5 +21,8 @@ urlpatterns = [
     path('affiliate/earnings/', affiliate_views.affiliate_earnings, name='affiliate_earnings'),
     path('affiliate/withdraw/', affiliate_views.affiliate_withdraw, name='affiliate_withdraw'),
     path('affiliate/profile/edit/', affiliate_views.affiliate_profile_edit, name='affiliate_profile_edit'),
+    path('about/', views.about, name='about'),
+    path('contact/', views.contact_view, name='contact_view'),
+    path('newsletter/subscribe/', views.newsletter_subscribe, name='newsletter_subscribe'),
 
 ]

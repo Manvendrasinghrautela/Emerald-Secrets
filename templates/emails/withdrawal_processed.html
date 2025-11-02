@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #28a745; color: white; padding: 20px; text-align: center; border-radius: 5px; }
+        .content { padding: 20px; background-color: #f9f9f9; }
+        .footer { text-align: center; padding: 10px; font-size: 12px; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✅ Withdrawal Processed!</h1>
+        </div>
+        <div class="content">
+            <p>Hi {{ affiliate.user.first_name }},</p>
+            <p>Great news! Your withdrawal has been successfully processed.</p>
+            
+            <p><strong>Amount Transferred:</strong> ₹{{ withdrawal.amount }}</p>
+            <p><strong>Payment Method:</strong> {{ withdrawal.get_payment_method_display }}</p>
+            <p><strong>Processed Date:</strong> {{ withdrawal.processed_at|date:"M d, Y H:i" }}</p>
+            
+            <p>You should see the amount in your account within 1-2 business days depending on your bank.</p>
+            <p>Thank you for being part of our affiliate program!</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2025 Emerald Secrets. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

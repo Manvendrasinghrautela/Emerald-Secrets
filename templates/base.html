@@ -42,18 +42,18 @@
                             Collections
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="collectionsDropdown">
-                            <li><a class="dropdown-item" href="{% url 'category_products' slug='earths-tone' %}">Earth’s Tone</a></li>
-                            <li><a class="dropdown-item" href="{% url 'category_products' slug='flora-section' %}">Flora Section</a></li>
+                            <li><a class="dropdown-item" href="{% url 'shop' %}">All Products</a></li>
+                            <li><a class="dropdown-item" href="{% url 'shop' %}?category=earths-tone">Earth's Tone</a></li>
+                            <li><a class="dropdown-item" href="{% url 'shop' %}?category=flora-section">Flora Section</a></li>
                         </ul>
                     </li>
+                    <!-- About - Redirect to Home with anchor -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#about">About</a>
+                        <a class="nav-link" href="{% url 'home' %}#about">About</a>
                     </li>
+                    <!-- Contact - Redirect to Home with anchor -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'affiliate_info' %}">Affiliate Program</a>
+                        <a class="nav-link" href="{% url 'home' %}#contact">Contact</a>
                     </li>
                 </ul>
                 
@@ -73,7 +73,7 @@
                     <a href="{% url 'cart' %}" class="nav-link position-relative me-3">
                         <i class="fas fa-shopping-bag fa-lg"></i>
                         {% if cart_count > 0 %}
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-pink">
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                 {{ cart_count }}
                             </span>
                         {% endif %}
@@ -86,7 +86,9 @@
                                 <i class="fas fa-user fa-lg"></i>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                                <li><a class="dropdown-item" href="#">My Profile</a></li>
+                                <li><a class="dropdown-item" href="#">My Orders</a></li>
+                                <li><a class="dropdown-item" href="#">Wishlist</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
                             </ul>
@@ -121,70 +123,98 @@
     <footer class="bg-light pt-5 pb-4 mt-5">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <div class="gradient-box p-3 rounded">
-                        <h5 class="text-white mb-3">Emerald Secrets</h5>
-                        <p class="text-white-50">Enhance your natural radiance with our premium beauty products, crafted with care and the finest ingredients.</p>
-                        <div class="social-links">
-                            <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
-                            <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
-                            <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
-                            <a href="#" class="text-white me-3"><i class="fas fa-envelope fa-lg"></i></a>
+                <!-- Brand Info -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="gradient-box p-4 rounded">
+                        <h5 class="text-white mb-3">
+                            <i class="fas fa-leaf me-2"></i>Emerald Secrets
+                        </h5>
+                        <p class="text-white-50 small">Enhance your natural radiance with our premium beauty products, crafted with care and the finest natural ingredients.</p>
+                        <div class="social-links mt-3">
+                            <a href="https://instagram.com" target="_blank" class="text-white me-3" title="Instagram">
+                                <i class="fab fa-instagram fa-lg"></i>
+                            </a>
+                            <a href="https://facebook.com" target="_blank" class="text-white me-3" title="Facebook">
+                                <i class="fab fa-facebook fa-lg"></i>
+                            </a>
+                            <a href="https://twitter.com" target="_blank" class="text-white me-3" title="Twitter">
+                                <i class="fab fa-twitter fa-lg"></i>
+                            </a>
+                            <a href="mailto:emeraldsecrets24@gmail.com" class="text-white me-3" title="Email">
+                                <i class="fas fa-envelope fa-lg"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
                 
+                <!-- Shop Links -->
                 <div class="col-lg-2 col-md-6 mb-4">
-                    <h6 class="fw-bold">Shop</h6>
+                    <h6 class="fw-bold mb-3">Shop</h6>
                     <ul class="list-unstyled">
-                        <li><a href="{% url 'shop' %}" class="text-muted text-decoration-none">All Products</a></li>
-                        <li><a href="{% url 'category_products' slug='earths-tone' %}" class="text-muted text-decoration-none">Earth's Tone</a></li>
-                        <li><a href="{% url 'category_products' slug='flora-section' %}" class="text-muted text-decoration-none">Flora</a></li>
+                        <li class="mb-2"><a href="{% url 'shop' %}" class="text-muted text-decoration-none">All Products</a></li>
+                        <li class="mb-2"><a href="{% url 'shop' %}?category=earths-tone" class="text-muted text-decoration-none">Earth's Tone</a></li>
+                        <li class="mb-2"><a href="{% url 'shop' %}?category=flora-section" class="text-muted text-decoration-none">Flora Section</a></li>
+                        <li class="mb-2"><a href="{% url 'cart' %}" class="text-muted text-decoration-none">My Cart</a></li>
                     </ul>
                 </div>
                 
+                <!-- Company Links -->
                 <div class="col-lg-2 col-md-6 mb-4">
-                    <h6 class="fw-bold">Company</h6>
+                    <h6 class="fw-bold mb-3">Company</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-muted text-decoration-none">About Us</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Our Story</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Sustainability</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Contact</a></li>
+                        <li class="mb-2"><a href="{% url 'home' %}#about" class="text-muted text-decoration-none">About Us</a></li>
+                        <li class="mb-2"><a href="{% url 'home' %}#about" class="text-muted text-decoration-none">Our Story</a></li>
+                        <li class="mb-2"><a href="{% url 'home' %}#about" class="text-muted text-decoration-none">Sustainability</a></li>
+                        <li class="mb-2"><a href="{% url 'home' %}#contact" class="text-muted text-decoration-none">Contact Us</a></li>
                     </ul>
                 </div>
                 
+                <!-- Support Links -->
                 <div class="col-lg-2 col-md-6 mb-4">
-                    <h6 class="fw-bold">Support</h6>
+                    <h6 class="fw-bold mb-3">Support</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-muted text-decoration-none">FAQ</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Shipping</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Returns</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Track Order</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">FAQ</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Shipping Info</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Returns & Exchanges</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Track Order</a></li>
                     </ul>
                 </div>
                 
-                <div class="col-lg-2 col-md-6 mb-4">
-                    <h6 class="fw-bold">Newsletter</h6>
+                <!-- Newsletter -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-3">Newsletter</h6>
                     <p class="small text-muted">Subscribe to receive exclusive tips, early access to new products, and special offers.</p>
-                    <form class="newsletter-form d-flex">
+                    <form method="POST" action="{% url 'newsletter_subscribe' %}" class="newsletter-form">
                         {% csrf_token %}
-                        <input type="email" class="form-control form-control-sm me-2" placeholder="Your email" required>
-                        <button class="btn btn-pink btn-sm" type="submit">Subscribe</button>
+                        <div class="input-group">
+                            <input type="email" name="email" class="form-control form-control-sm" placeholder="Your email" required>
+                            <button class="btn btn-pink btn-sm" type="submit">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <small class="form-text text-muted mt-2 d-block">We respect your privacy. Unsubscribe anytime.</small>
                     </form>
                 </div>
             </div>
             
             <hr class="my-4">
             
+            <!-- Footer Bottom -->
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <p class="small text-muted mb-0">© 2025 Emerald Secrets. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <div class="d-flex justify-content-md-end align-items-center">
-                        <span class="badge bg-success me-2">100% Natural Ingredients</span>
-                        <span class="badge bg-info me-2">Cruelty Free</span>
-                        <span class="badge bg-warning">10K+ Happy Customers</span>
+                    <div class="d-flex justify-content-md-end align-items-center flex-wrap gap-2">
+                        <span class="badge bg-success">
+                            <i class="fas fa-leaf me-1"></i>100% Natural
+                        </span>
+                        <span class="badge bg-info">
+                            <i class="fas fa-heart me-1"></i>Cruelty Free
+                        </span>
+                        <span class="badge bg-warning text-dark">
+                            <i class="fas fa-users me-1"></i>10K+ Happy Customers
+                        </span>
                     </div>
                 </div>
             </div>
@@ -193,6 +223,23 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Smooth scrolling for anchor links -->
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+    
     <!-- Custom JS -->
     <script src="{% static 'js/main.js' %}"></script>
     

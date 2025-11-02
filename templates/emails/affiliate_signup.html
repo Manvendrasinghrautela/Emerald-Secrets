@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #d63384; color: white; padding: 20px; text-align: center; border-radius: 5px; }
+        .content { padding: 20px; background-color: #f9f9f9; }
+        .code-box { background-color: #f0f0f0; padding: 15px; border-left: 4px solid #d63384; margin: 20px 0; }
+        .footer { text-align: center; padding: 10px; font-size: 12px; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to Our Affiliate Program</h1>
+        </div>
+        <div class="content">
+            <p>Hi {{ affiliate.user.first_name }},</p>
+            <p>Congratulations! Your affiliate account has been created successfully.</p>
+            
+            <p><strong>Your Affiliate Code:</strong></p>
+            <div class="code-box">
+                <p style="font-size: 18px; font-weight: bold; margin: 0;">{{ affiliate_code }}</p>
+            </div>
+            
+            <p>You can now start earning 5% commission on every sale you refer!</p>
+            
+            <p><strong>How to use your affiliate code:</strong></p>
+            <ul>
+                <li>Share your unique affiliate link with friends</li>
+                <li>When they purchase using your link, you earn 5% commission</li>
+                <li>Track your earnings in your affiliate dashboard</li>
+                <li>Withdraw your earnings once you reach ₹500</li>
+            </ul>
+            
+            <p>Log in to your affiliate dashboard to start generating links for our products.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2025 Emerald Secrets. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
